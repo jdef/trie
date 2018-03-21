@@ -37,7 +37,7 @@ func (trie *RuneTrie) Get(key string) (interface{}, bool) {
 func (trie *RuneTrie) Put(key string, value interface{}) bool {
 	node := trie
 	for _, r := range key {
-		child, _ := node.children[r]
+		child := node.children[r]
 		if child == nil {
 			child = NewRuneTrie()
 			node.children[r] = child
