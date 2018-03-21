@@ -101,8 +101,8 @@ func (trie *PathTrie) Delete(key string) bool {
 // walker function with the key and value. If the walker function returns
 // an error, the walk is aborted.
 // The traversal is depth first with no guaranteed order.
-func (trie *PathTrie) Walk(walker WalkFunc) error {
-	return trie.walk("", walker)
+func (trie *PathTrie) Walk(walker WalkFunc) {
+	trie.walk("", walker)
 }
 
 // PathTrie node and the part string key of the child the path descends into.
@@ -111,17 +111,13 @@ type nodeStr struct {
 	part string
 }
 
-func (trie *PathTrie) walk(key string, walker WalkFunc) error {
+func (trie *PathTrie) walk(key string, walker WalkFunc) {
 	if trie.value != nil {
 		walker(key, trie.value)
 	}
 	for part, child := range trie.children {
-		err := child.walk(key+part, walker)
-		if err != nil {
-			return err
-		}
+		child.walk(key+part, walker)
 	}
-	return nil
 }
 
 func (trie *PathTrie) isLeaf() bool {

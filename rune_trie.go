@@ -85,8 +85,8 @@ func (trie *RuneTrie) Delete(key string) bool {
 // walker function with the key and value. If the walker function returns
 // an error, the walk is aborted.
 // The traversal is depth first with no guaranteed order.
-func (trie *RuneTrie) Walk(walker WalkFunc) error {
-	return trie.walk("", walker)
+func (trie *RuneTrie) Walk(walker WalkFunc) {
+	trie.walk("", walker)
 }
 
 // RuneTrie node and the rune key of the child the path descends into.
@@ -95,17 +95,13 @@ type nodeRune struct {
 	r    rune
 }
 
-func (trie *RuneTrie) walk(key string, walker WalkFunc) error {
+func (trie *RuneTrie) walk(key string, walker WalkFunc) {
 	if trie.value != nil {
 		walker(key, trie.value)
 	}
 	for r, child := range trie.children {
-		err := child.walk(key+string(r), walker)
-		if err != nil {
-			return err
-		}
+		child.walk(key+string(r), walker)
 	}
-	return nil
 }
 
 func (trie *RuneTrie) isLeaf() bool {
