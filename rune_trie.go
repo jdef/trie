@@ -16,16 +16,17 @@ func NewRuneTrie() *RuneTrie {
 }
 
 // Get returns the value stored at the given key. Returns nil for internal
-// nodes or for nodes with a value of nil.
-func (trie *RuneTrie) Get(key string) interface{} {
+// nodes or for nodes with a value of nil. Returns true if a matching internal
+// or leaf node was found in the tree.
+func (trie *RuneTrie) Get(key string) (interface{}, bool) {
 	node := trie
 	for _, r := range key {
 		node = node.children[r]
 		if node == nil {
-			return nil
+			return nil, false
 		}
 	}
-	return node.value
+	return node.value, true
 }
 
 // Put inserts the value into the trie at the given key, replacing any

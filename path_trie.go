@@ -23,19 +23,20 @@ func NewPathTrie() *PathTrie {
 }
 
 // Get returns the value stored at the given key. Returns nil for internal
-// nodes or for nodes with a value of nil.
-func (trie *PathTrie) Get(key string) interface{} {
+// nodes or for nodes with a value of nil. Returns true if a matching internal
+// or leaf node was found in the tree.
+func (trie *PathTrie) Get(key string) (interface{}, bool) {
 	node := trie
 	for part, i := trie.segmenter(key, 0); ; part, i = trie.segmenter(key, i) {
 		node = node.children[part]
 		if node == nil {
-			return nil
+			return nil, false
 		}
 		if i == -1 {
 			break
 		}
 	}
-	return node.value
+	return node.value, true
 }
 
 // Put inserts the value into the trie at the given key, replacing any

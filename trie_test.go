@@ -65,7 +65,7 @@ func testTrie(t *testing.T, trie Trier) {
 
 	// get missing keys
 	for _, c := range cases {
-		if value := trie.Get(c.key); value != nil {
+		if value, _ := trie.Get(c.key); value != nil {
 			t.Errorf("expected key %s to be missing, found value %v", c.key, value)
 		}
 	}
@@ -86,7 +86,7 @@ func testTrie(t *testing.T, trie Trier) {
 
 	// get
 	for _, c := range cases {
-		if value := trie.Get(c.key); value != c.value {
+		if value, _ := trie.Get(c.key); value != c.value {
 			t.Errorf("expected key %s to have value %v, got %v", c.key, c.value, value)
 		}
 	}
@@ -108,7 +108,7 @@ func testTrie(t *testing.T, trie Trier) {
 
 	// get deleted keys
 	for _, c := range cases {
-		if value := trie.Get(c.key); value != nil {
+		if value, _ := trie.Get(c.key); value != nil {
 			t.Errorf("expected key %s to be deleted, got value %v", c.key, value)
 		}
 	}
@@ -134,8 +134,43 @@ func testNilBehavior(t *testing.T, trie Trier) {
 
 	// get nil
 	for _, key := range expectNilValues {
-		if value := trie.Get(key); value != nil {
+		if value, _ := trie.Get(key); value != nil {
 			t.Errorf("expected key %s to have value nil, got %v", key, value)
+		}
+	}
+}
+
+func TestBoolBehavior(t *testing.T) {
+	trie := NewPathTrie()
+	cases := []struct {
+		key   string
+		value interface{}
+	}{
+		{"/cat", 1},
+		{"/catamaran", 2},
+		{"/caterpillar/a/b/c", nil},
+	}
+	expectFalseValues := []string{"/", "/c", "/ca", "/other", "/caterpillar/b"}
+	expectTrueValues := []string{"/cat", "/caterpillar", "/caterpillar/a", "/caterpillar/a/b", "/caterpillar/a/b/c"}
+
+	// initial put
+	for _, c := range cases {
+		if isNew := trie.Put(c.key, c.value); !isNew {
+			t.Errorf("expected key %s to be missing", c.key)
+		}
+	}
+
+	// get false
+	for _, key := range expectFalseValues {
+		if _, found := trie.Get(key); found {
+			t.Errorf("expected node for key %s to not be found", key)
+		}
+	}
+
+	// get true
+	for _, key := range expectTrueValues {
+		if _, found := trie.Get(key); !found {
+			t.Errorf("expected node for key %s to be found", key)
 		}
 	}
 }
@@ -144,7 +179,7 @@ func testTrieRoot(t *testing.T, trie Trier) {
 	const firstPutValue = "first put"
 	const putValue = "value"
 
-	if value := trie.Get(""); value != nil {
+	if value, _ := trie.Get(""); value != nil {
 		t.Errorf("expected key '' to be missing, found value %v", value)
 	}
 	if !trie.Put("", firstPutValue) {
@@ -153,13 +188,13 @@ func testTrieRoot(t *testing.T, trie Trier) {
 	if trie.Put("", putValue) {
 		t.Error("expected key '' to have a value already")
 	}
-	if value := trie.Get(""); value != putValue {
+	if value, _ := trie.Get(""); value != putValue {
 		t.Errorf("expected key '' to have value %v, got %v", putValue, value)
 	}
 	if !trie.Delete("") {
 		t.Error("expected key '' to be deleted")
 	}
-	if value := trie.Get(""); value != nil {
+	if value, _ := trie.Get(""); value != nil {
 		t.Errorf("expected key '' to be deleted, got value %v", value)
 	}
 }
