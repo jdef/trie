@@ -12,6 +12,8 @@ var pathKeys [1000]string // random /paths/of/parts keys
 const partsPerKey = 3     // (e.g. /a/b/c has parts /a, /b, /c)
 const bytesPerPart = 10
 
+var noValue = (interface{})(struct{}{})
+
 func init() {
 	// string keys
 	for i := 0; i < len(stringKeys); i++ {
@@ -47,14 +49,14 @@ func BenchmarkRuneTriePutStringKey(b *testing.B) {
 	b.ResetTimer()
 	b.ReportAllocs()
 	for i := 0; i < b.N; i++ {
-		trie.Put(stringKeys[i%len(stringKeys)], i)
+		trie.Put(stringKeys[i%len(stringKeys)], noValue)
 	}
 }
 
 func BenchmarkRuneTrieGetStringKey(b *testing.B) {
 	trie := NewRuneTrie()
 	for i := 0; i < b.N; i++ {
-		trie.Put(stringKeys[i%len(stringKeys)], i)
+		trie.Put(stringKeys[i%len(stringKeys)], noValue)
 	}
 	b.ResetTimer()
 	b.ReportAllocs()
@@ -70,14 +72,14 @@ func BenchmarkRuneTriePutPathKey(b *testing.B) {
 	b.ResetTimer()
 	b.ReportAllocs()
 	for i := 0; i < b.N; i++ {
-		trie.Put(pathKeys[i%len(pathKeys)], i)
+		trie.Put(pathKeys[i%len(pathKeys)], noValue)
 	}
 }
 
 func BenchmarkRuneTrieGetPathKey(b *testing.B) {
 	trie := NewRuneTrie()
 	for i := 0; i < b.N; i++ {
-		trie.Put(pathKeys[i%len(pathKeys)], i)
+		trie.Put(pathKeys[i%len(pathKeys)], noValue)
 	}
 	b.ResetTimer()
 	b.ReportAllocs()
@@ -96,14 +98,14 @@ func BenchmarkPathTriePutStringKey(b *testing.B) {
 	b.ResetTimer()
 	b.ReportAllocs()
 	for i := 0; i < b.N; i++ {
-		trie.Put(stringKeys[i%len(stringKeys)], i)
+		trie.Put(stringKeys[i%len(stringKeys)], noValue)
 	}
 }
 
 func BenchmarkPathTrieGetStringKey(b *testing.B) {
 	trie := NewPathTrie()
 	for i := 0; i < b.N; i++ {
-		trie.Put(stringKeys[i%len(stringKeys)], i)
+		trie.Put(stringKeys[i%len(stringKeys)], noValue)
 	}
 	b.ResetTimer()
 	b.ReportAllocs()
@@ -119,14 +121,14 @@ func BenchmarkPathTriePutPathKey(b *testing.B) {
 	b.ResetTimer()
 	b.ReportAllocs()
 	for i := 0; i < b.N; i++ {
-		trie.Put(pathKeys[i%len(pathKeys)], i)
+		trie.Put(pathKeys[i%len(pathKeys)], noValue)
 	}
 }
 
 func BenchmarkPathTrieGetPathKey(b *testing.B) {
 	trie := NewPathTrie()
 	for i := 0; i < b.N; i++ {
-		trie.Put(pathKeys[i%len(pathKeys)], i)
+		trie.Put(pathKeys[i%len(pathKeys)], noValue)
 	}
 	b.ResetTimer()
 	b.ReportAllocs()
